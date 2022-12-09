@@ -1,14 +1,14 @@
 <?php
 
 $tarifBase = $_POST['tarifBase'] ?? 0.1659;
-$aboBase = $_POST['aboBase'] ?? 15;
+$aboBase = $_POST['aboBase'] ?? 11.36;
 $tarifHP = $_POST['tarifHP'] ?? 0.1740;
 $tarifHC1 = $_POST['tarifHC1'] ?? '1400-1600-0.1402';
 $tarifHC2 = $_POST['tarifHC2'] ?? '';
-$aboHCHP = $_POST['aboHCHP'] ?? 15;
+$aboHCHP = $_POST['aboHCHP'] ?? 14.82;
 $aboTempo = $_POST['aboTempo'] ?? 15;
 
-if (isset($_POST['tarifBase']) && isset($_POST['tarifHP']) && isset($_POST['tarifHC1']) && isset($_FILES['conso_file'])) {
+if (isset($_POST['tarifBase']) && isset($_POST['tarifHP']) && isset($_POST['tarifHC1']) && isset($_FILES['conso_file']) && file_exists($_FILES['conso_file']['tmp_name'])) {
     $consos = [];
 
     $sumBase = $sumTempo = $sumHCHP = 0;
@@ -220,15 +220,15 @@ if (isset($_POST['tarifBase']) && isset($_POST['tarifHP']) && isset($_POST['tari
         <fieldset>
             <legend>BASE</legend>
             <div class="row mb-3">
-                <div class="col-6">
-                    <label for="tarifBase" class="form-label">Tarif base</label>
-                    <input type="text" class="form-control" name="tarifBase" id="tarifBase" value="<?php
-                    echo $tarifBase; ?>" placeholder="0.1659">
-                </div>
-                <div class="col-6">
+                <div class="col">
                     <label for="aboBase" class="form-label">Abonnement mensuel base</label>
                     <input type="text" class="form-control" name="aboBase" id="aboBase" value="<?php
                     echo $aboBase; ?>" placeholder="15">
+                </div>
+                <div class="col">
+                    <label for="tarifBase" class="form-label">Tarif base</label>
+                    <input type="text" class="form-control" name="tarifBase" id="tarifBase" value="<?php
+                    echo $tarifBase; ?>" placeholder="0.1659">
                 </div>
             </div>
         </fieldset>
