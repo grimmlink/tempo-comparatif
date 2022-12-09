@@ -210,7 +210,11 @@ if (isset($_POST['tarif']) && isset($_POST['hc_config']) && isset($_FILES['conso
     if (isset($totalTable)) {
         echo $totalTable;
     } ?>
+
+
+    <p class="text-end small"><a href="https://github.com/grimmlink/tempo-comparatif">Voir le code sur GitHub</a></p>
 </div>
+
 </body>
 </html>
 
