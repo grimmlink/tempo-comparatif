@@ -15,17 +15,18 @@ if (isset($_POST['tarif']) && isset($_POST['hc_config']) && isset($_FILES['conso
             $sourceDate = trim(str_replace("﻿", '', $date));
             $newDate = DateTime::createFromFormat(DATE_ATOM, $sourceDate);
 
-            $consos[] = [
+            $consos[$newDate->format('U')] = [
                 'date' => $newDate,
                 'val' => $conso,
             ];
         }
         fclose($handle);
     }
+    ksort($consos);
+    $consos = array_values($consos);
 
     $firstDay = $consos[0]['date'];
     $lastDay = $consos[count($consos) - 1]['date'];
-
 
     $tempoHistoJson = json_decode(file_get_contents('https://raw.githubusercontent.com/grimmlink/tempo-comparatif/master/tempo.json'),
         true);
@@ -57,6 +58,12 @@ if (isset($_POST['tarif']) && isset($_POST['hc_config']) && isset($_FILES['conso
 
             if ($interval === 0) {
                 $interval = (int) $period->format('%h') * 60;
+            }
+
+            if ($interval === 0) {
+                echo 'Interval of 0 on line ' . $row . '<br />';
+                echo '<pre>';
+                var_dump($consos[$row]['date'], $consos[$row + 1]['date']); exit;
             }
         }
 
