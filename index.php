@@ -1,19 +1,33 @@
 <?php
 
-$tarifBase = $_POST['tarif'] ?? 0.1659;
-$rawConfigHC = $_POST['hc_config'] ?? '0,1740;1400-1600-0,1402;0000-0600-0,1402';
+$tarifBase = $_POST['tarifBase'] ?? 0.1659;
+$aboBase = $_POST['aboBase'] ?? 15;
+$tarifHP = $_POST['tarifHP'] ?? 0.1740;
+$tarifHC1 = $_POST['tarifHC1'] ?? '1400-1600-0.1402';
+$tarifHC2 = $_POST['tarifHC2'] ?? '';
+$aboHCHP = $_POST['aboHCHP'] ?? 15;
+$aboTempo = $_POST['aboTempo'] ?? 15;
 
-if (isset($_POST['tarif']) && isset($_POST['hc_config']) && isset($_FILES['conso_file'])) {
+if (isset($_POST['tarifBase']) && isset($_POST['tarifHP']) && isset($_POST['tarifHC1']) && isset($_FILES['conso_file'])) {
     $consos = [];
 
     $sumBase = $sumTempo = $sumHCHP = 0;
+    $nbMonths = 0;
+    $prevMonth = null;
 
+    // Prepare conso
     if (($handle = fopen($_FILES['conso_file']['tmp_name'], "r")) !== false) {
         while (($data = fgetcsv($handle, 1000, ";")) !== false) {
             list($date, $conso) = $data;
 
             $sourceDate = trim(str_replace("﻿", '', $date));
             $newDate = DateTime::createFromFormat(DATE_ATOM, $sourceDate);
+
+            $month = $newDate->format('n');
+            if (!$prevMonth || $prevMonth !== $month) {
+                $prevMonth = $month;
+                $nbMonths++;
+            }
 
             $consos[$newDate->format('U')] = [
                 'date' => $newDate,
@@ -28,23 +42,27 @@ if (isset($_POST['tarif']) && isset($_POST['hc_config']) && isset($_FILES['conso
     $firstDay = $consos[0]['date'];
     $lastDay = $consos[count($consos) - 1]['date'];
 
+    // Histo Tempo
     $tempoHistoJson = json_decode(file_get_contents('https://raw.githubusercontent.com/grimmlink/tempo-comparatif/master/tempo.json'),
         true);
     foreach ($tempoHistoJson['dates'] as $item) {
         $tempoHisto[$item['date']] = $item['couleur'];
     }
 
-    $configsHC = explode(';', $rawConfigHC);
-    $tarifHP = array_shift($configsHC);
+    // HC
     $periodsHC = [];
-    foreach ($configsHC as $configHC) {
-        list($start, $end, $tarif) = explode('-', $configHC);
-        $periodsHC[] = [
-            'start' => (int)$start,
-            'end' => (int)$end,
-            'tarif' => str_replace(',', '.', $tarif),
-        ];
-    }
+    list($start, $end, $tarif) = explode('-', $tarifHC1);
+    $periodsHC[] = [
+        'start' => (int)$start,
+        'end' => (int)$end,
+        'tarif' => str_replace(',', '.', $tarif),
+    ];
+    list($start, $end, $tarif) = explode('-', $tarifHC2);
+    $periodsHC[] = [
+        'start' => (int)$start,
+        'end' => (int)$end,
+        'tarif' => str_replace(',', '.', $tarif),
+    ];
 
     $comparatif = [];
     $row = 0;
@@ -54,16 +72,17 @@ if (isset($_POST['tarif']) && isset($_POST['hc_config']) && isset($_FILES['conso
         if (isset($consos[$row + 1])) {
             /** @var DateInterval $period */
             $period = $consos[$row + 1]['date']->diff($currentDate);
-            $interval = (int) $period->format('%i');
+            $interval = (int)$period->format('%i');
 
             if ($interval === 0) {
-                $interval = (int) $period->format('%h') * 60;
+                $interval = (int)$period->format('%h') * 60;
             }
 
             if ($interval === 0) {
-                echo 'Interval of 0 on line ' . $row . '<br />';
+                echo 'Interval of 0 on line '.$row.'<br />';
                 echo '<pre>';
-                var_dump($consos[$row]['date'], $consos[$row + 1]['date']); exit;
+                var_dump($consos[$row]['date'], $consos[$row + 1]['date']);
+                exit;
             }
         }
 
@@ -115,6 +134,10 @@ if (isset($_POST['tarif']) && isset($_POST['hc_config']) && isset($_FILES['conso
         $row++;
     }
 
+    $totalBase = $sumBase + $aboBase * $nbMonths;
+    $totalTempo = $sumTempo + $aboTempo * $nbMonths;
+    $totalHCHP = $sumHCHP + $aboHCHP * $nbMonths;
+
     if (isset($_POST['export']) && $_POST['export'] === 'oui') {
         $fp = fopen('php://memory', 'w');
         fputcsv($fp, [
@@ -141,22 +164,35 @@ if (isset($_POST['tarif']) && isset($_POST['hc_config']) && isset($_FILES['conso
         exit;
     } else {
         $totalTable = '
+            <h3>Période du '.$consos[0]['date']->format('d/m/Y').' au '.$consos[count($consos) - 1]['date']->format('d/m/Y').'</h3>
             <table class="table table-striped">
                 <tr>
                     <th></th>
-                    <th>Période '.$consos[0]['date']->format('d/m/Y').' à '.$consos[count($consos) - 1]['date']->format('d/m/Y').'</th>
+                    <th>Abonnement ('.$nbMonths.' mois)</th>
+                    <th>Consommation période</th>
+                    <th>Total période</th>
+                    <th>Economie</th>
                 </tr>
                 <tr>
-                    <th>Somme Base</th>
-                    <td>'.$sumBase.'€</td>
+                    <th>Base</th>
+                    <td>'.number_format($aboBase * $nbMonths, 2).'€</td>
+                    <td>'.number_format($sumBase, 2).'€</td>
+                    <td>'.number_format($totalBase, 2).'€</td>
+                    <td></td>
                 </tr>
                 <tr>
-                    <th>Somme TEMPO</th>
-                    <td>'.$sumTempo.'€</td>
+                    <th>TEMPO</th>
+                    <td>'.number_format($aboTempo * $nbMonths, 2).'€</td>
+                    <td>'.number_format($sumTempo, 2).'€</td>
+                    <td>'.number_format($totalTempo, 2).'€</td>
+                    <td>'.number_format(100-(100 * $totalTempo / $totalBase), 2).'%</td>
                 </tr>
                 <tr>
-                    <th>Somme HCHP</th>
-                    <td>'.$sumHCHP.'€</td>
+                    <th>HC/HP</th>
+                    <td>'.number_format($aboHCHP * $nbMonths, 2).'€</td>
+                    <td>'.number_format($sumHCHP, 2).'€</td>
+                    <td>'.number_format($totalHCHP, 2).'€</td>
+                    <td>'.number_format(100-(100 * $totalHCHP / $totalBase), 2).'%</td>
                 </tr>
             </table>
             ';
@@ -181,37 +217,84 @@ if (isset($_POST['tarif']) && isset($_POST['hc_config']) && isset($_FILES['conso
     <h1>Comparatif de facture Base / HC / Tempo</h1>
 
     <form action="/" method="POST" enctype="multipart/form-data">
-        <div class="mb-3">
-            <label for="tarif" class="form-label">Tarif base</label>
-            <input type="text" class="form-control" name="tarif" id="tarif" value="<?php
-            echo $tarifBase; ?>" placeholder="0.1659">
-        </div>
-        <div class="mb-3">
-            <label for="hc_config" class="form-label">HC périodes (format
-                <code>tarifHP;debut-fin;tarifHC;debut-fin;...</code> exemple :
-                "0,1740;1400-1600-0,1402;0000-0600-0,1402")</label>
-            <input type="text" class="form-control" name="hc_config" id="hc_config" value="<?php
-            echo $rawConfigHC; ?>" placeholder="0,1740;1400-1600-0,1402;0000-0600-0,1402">
-        </div>
-        <div class="mb-3">
-            <label for="conso_file" class="form-label">Fichier de conso (CSV)</label>
-            <input type="file" class="form-control" name="conso_file" id="conso_file">
-            <p class="small">
-                Fichier CSV incluant uniquement votre consommation respectant ce format (format d'export de la conso
-                horaire enedis : https://mon-compte-particulier.enedis.fr/suivi-de-mesures/)<br/>
-                <code>
-                    2022-11-02T07:00:00+01:00;288<br/>
-                    2022-11-02T07:30:00+01:00;298<br/>
-                    2022-11-02T08:00:00+01:00;252<br/>
-                    2022-11-02T08:30:00+01:00;278
-                </code>
-            </p>
-        </div>
+        <fieldset>
+            <legend>BASE</legend>
+            <div class="row mb-3">
+                <div class="col-6">
+                    <label for="tarifBase" class="form-label">Tarif base</label>
+                    <input type="text" class="form-control" name="tarifBase" id="tarifBase" value="<?php
+                    echo $tarifBase; ?>" placeholder="0.1659">
+                </div>
+                <div class="col-6">
+                    <label for="aboBase" class="form-label">Abonnement mensuel base</label>
+                    <input type="text" class="form-control" name="aboBase" id="aboBase" value="<?php
+                    echo $aboBase; ?>" placeholder="15">
+                </div>
+            </div>
+        </fieldset>
+
+        <fieldset>
+            <legend>HC/HP</legend>
+            <div class="row mb-3">
+                <div class="col">
+                    <label for="aboHCHP" class="form-label">Abonnement HC/HP</label>
+                    <input type="text" class="form-control" name="aboHCHP" id="aboHCHP" value="<?php
+                    echo $aboHCHP; ?>" placeholder="15">
+                </div>
+                <div class="col">
+                    <label for="tarifHP" class="form-label">Tarif HP</label>
+                    <input type="text" class="form-control" name="tarifHP" id="tarifHP" value="<?php
+                    echo $tarifHP; ?>" placeholder="0,1740;1400-1600-0,1402;0000-0600-0,1402">
+                </div>
+                <div class="col">
+                    <label for="tarifHC1" class="form-label">Tarif HC 1</label>
+                    <input type="text" class="form-control" name="tarifHC1" id="tarifHC1" value="<?php
+                    echo $tarifHC1; ?>" placeholder="1400-1600-0,1402">
+                    <p class="small">Format : <code>début[hhmm]-fin[hhmm]-tarif</code>.<br/>Exemple :
+                        <code>1400-1600-0.1402</code></p>
+                </div>
+                <div class="col">
+                    <label for="tarifHC2" class="form-label">Tarif HC 2</label>
+                    <input type="text" class="form-control" name="tarifHC2" id="tarifHC2" value="<?php
+                    echo $tarifHC2; ?>" placeholder="0000-0600-0.1402">
+                    <p class="small">Format : <code>début[hhmm]-fin[hhmm]-tarif</code>.<br/>Exemple :
+                        <code>0000-0600-0.1402</code></p>
+                </div>
+            </div>
+        </fieldset>
+
+        <fieldset>
+            <legend>Consommation</legend>
+            <div class="row mb-3">
+                <div class="col">
+                    <label for="aboTempo" class="form-label">Abonnement Tempo</label>
+                    <input type="text" class="form-control" name="aboTempo" id="aboTempo" value="<?php
+                    echo $aboTempo; ?>" placeholder="15">
+                </div>
+                <div class="col">
+                    <label for="conso_file" class="form-label">Fichier de conso (CSV)</label>
+                    <input type="file" class="form-control" name="conso_file" id="conso_file">
+                    <p class="small">
+                        Fichier CSV incluant uniquement votre consommation respectant ce format (format d'export de la
+                        conso
+                        horaire enedis : https://mon-compte-particulier.enedis.fr/suivi-de-mesures/)<br/>
+                        <code>
+                            2022-11-02T07:00:00+01:00;288<br/>
+                            2022-11-02T07:30:00+01:00;298<br/>
+                            2022-11-02T08:00:00+01:00;252<br/>
+                            2022-11-02T08:30:00+01:00;278
+                        </code>
+                    </p>
+                </div>
+            </div>
+        </fieldset>
+
         <div class="mb-3">
             <label for="export">
                 <input type="checkbox" id="export" name="export" value="oui"> Télécharger le détail en CSV
             </label>
         </div>
+
         <div class="mb-3">
             <button type="submit" class="btn btn-primary mb-3">Calculer</button>
         </div>
