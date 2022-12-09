@@ -53,7 +53,11 @@ if (isset($_POST['tarif']) && isset($_POST['hc_config']) && isset($_FILES['conso
         if (isset($consos[$row + 1])) {
             /** @var DateInterval $period */
             $period = $consos[$row + 1]['date']->diff($currentDate);
-            $interval = $period->format('%i');
+            $interval = (int) $period->format('%i');
+
+            if ($interval === 0) {
+                $interval = (int) $period->format('%h') * 60;
+            }
         }
 
         $divisionHoraire = (60 / $interval);
