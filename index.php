@@ -77,7 +77,7 @@ if (isset($_POST['tarif']) && isset($_POST['hc_config']) && isset($_FILES['conso
     $lastDay = $consos[count($consos)-1]['date'];
 
 
-    $tempoHistoJson = json_decode(file_get_contents('tempo.json'), true);
+    $tempoHistoJson = json_decode(file_get_contents('https://raw.githubusercontent.com/grimmlink/tempo-comparatif/master/tempo.json'), true);
     foreach ($tempoHistoJson['dates'] as $item) {
         $tempoHisto[$item['date']] = $item['couleur'];
     }
