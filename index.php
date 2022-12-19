@@ -55,13 +55,13 @@ if (isset($_POST['tarifBase']) && isset($_POST['tarifHP']) && isset($_POST['tari
     $periodsHC[] = [
         'start' => (int)$start,
         'end' => (int)$end,
-        'tarif' => str_replace(',', '.', $tarif),
+        'tarif' => floatval(str_replace(',', '.', $tarif)),
     ];
     list($start, $end, $tarif) = explode('-', $tarifHC2);
     $periodsHC[] = [
         'start' => (int)$start,
         'end' => (int)$end,
-        'tarif' => str_replace(',', '.', $tarif),
+        'tarif' => floatval(str_replace(',', '.', $tarif)),
     ];
 
     $comparatif = [];
