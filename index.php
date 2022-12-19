@@ -57,12 +57,14 @@ if (isset($_POST['tarifBase']) && isset($_POST['tarifHP']) && isset($_POST['tari
         'end' => (int)$end,
         'tarif' => floatval(str_replace(',', '.', $tarif)),
     ];
-    list($start, $end, $tarif) = explode('-', $tarifHC2);
-    $periodsHC[] = [
-        'start' => (int)$start,
-        'end' => (int)$end,
-        'tarif' => floatval(str_replace(',', '.', $tarif)),
-    ];
+    if ($tarifHC2 !== '') {
+        list($start, $end, $tarif) = explode('-', $tarifHC2);
+        $periodsHC[] = [
+            'start' => (int)$start,
+            'end' => (int)$end,
+            'tarif' => floatval(str_replace(',', '.', $tarif)),
+        ];
+    }
 
     $comparatif = [];
     $row = 0;
