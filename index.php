@@ -14,6 +14,7 @@ if (isset($_POST['tarifBase']) && isset($_POST['tarifHP']) && isset($_POST['tari
     $sumBase = $sumTempo = $sumHCHP = 0;
     $nbMonths = 0;
     $prevMonth = null;
+    $totalConso = 0;
 
     // Prepare conso
     if (($handle = fopen($_FILES['conso_file']['tmp_name'], "r")) !== false) {
@@ -33,6 +34,8 @@ if (isset($_POST['tarifBase']) && isset($_POST['tarifHP']) && isset($_POST['tari
                 'date' => $newDate,
                 'val' => $conso,
             ];
+
+            $totalConso += $conso;
         }
         fclose($handle);
     }
@@ -166,7 +169,10 @@ if (isset($_POST['tarifBase']) && isset($_POST['tarifHP']) && isset($_POST['tari
         exit;
     } else {
         $totalTable = '
-            <h3>Période du '.$consos[0]['date']->format('d/m/Y').' au '.$consos[count($consos) - 1]['date']->format('d/m/Y').'</h3>
+            <h3>
+                Période du '.$consos[0]['date']->format('d/m/Y').' au '.$consos[count($consos) - 1]['date']->format('d/m/Y').'
+                 - Consommation totale : '.($totalConso/1000).' kWh
+            </h3>
             <table class="table table-striped">
                 <tr>
                     <th></th>
@@ -187,14 +193,14 @@ if (isset($_POST['tarifBase']) && isset($_POST['tarifHP']) && isset($_POST['tari
                     <td>'.number_format($aboTempo * $nbMonths, 2).'€</td>
                     <td>'.number_format($sumTempo, 2).'€</td>
                     <td>'.number_format($totalTempo, 2).'€</td>
-                    <td>'.number_format(100-(100 * $totalTempo / $totalBase), 2).'%</td>
+                    <td>'.number_format(100 - (100 * $totalTempo / $totalBase), 2).'%</td>
                 </tr>
                 <tr>
                     <th>HC/HP</th>
                     <td>'.number_format($aboHCHP * $nbMonths, 2).'€</td>
                     <td>'.number_format($sumHCHP, 2).'€</td>
                     <td>'.number_format($totalHCHP, 2).'€</td>
-                    <td>'.number_format(100-(100 * $totalHCHP / $totalBase), 2).'%</td>
+                    <td>'.number_format(100 - (100 * $totalHCHP / $totalBase), 2).'%</td>
                 </tr>
             </table>
             ';
