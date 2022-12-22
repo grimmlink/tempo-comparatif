@@ -98,7 +98,7 @@ if (isset($_POST['tarifBase']) && isset($_POST['tarifHP']) && isset($_POST['tari
 
         // Tempo
         $isTempoHC = (int)$currentDate->format('Hi') > 2200 || (int)$currentDate->format('Hi') < 600;
-        $couleurTempo = $tempoHisto[$currentDate->format('Y-m-d')] ?? 'TEMPO_BLEU';
+        $couleurTempo = $tempoHisto[$currentDate->format('Y-n-d')] ?? 'TEMPO_BLEU';
         $tarifTempo = 0.1272;
         if ($couleurTempo === 'TEMPO_BLEU') {
             $tarifTempo = $isTempoHC ? 0.0862 : 0.1272;
