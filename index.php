@@ -35,7 +35,7 @@ if (isset($_POST['tarifBase']) && isset($_POST['tarifHP']) && isset($_POST['tari
                 'val' => $conso,
             ];
 
-            $totalConso += $conso;
+            $totalConso += floatval($conso);
         }
         fclose($handle);
     }
