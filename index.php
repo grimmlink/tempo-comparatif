@@ -432,15 +432,7 @@ if (isset($_POST['tarifBase']) && isset($_POST['tarifHP']) && isset($_POST['tari
                     <label for="conso_file" class="form-label">Fichier de conso (CSV)</label>
                     <input type="file" class="form-control" name="conso_file" id="conso_file">
                     <p class="small">
-                        Fichier CSV incluant uniquement votre consommation respectant ce format (format d'export de la
-                        conso
-                        horaire enedis : https://mon-compte-particulier.enedis.fr/suivi-de-mesures/)<br/>
-                        <code>
-                            2022-11-02T07:00:00+01:00;288<br/>
-                            2022-11-02T07:30:00+01:00;298<br/>
-                            2022-11-02T08:00:00+01:00;252<br/>
-                            2022-11-02T08:30:00+01:00;278
-                        </code>
+                        Fichier CSV récupéré sur <a href="https://mon-compte-particulier.enedis.fr/suivi-de-mesures">Enedis</a>
                     </p>
                 </div>
             </div>
