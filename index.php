@@ -1,12 +1,150 @@
 <?php
 
-$tarifBase = $_POST['tarifBase'] ?? 0.1659;
-$aboBase = $_POST['aboBase'] ?? 11.36;
-$tarifHP = $_POST['tarifHP'] ?? 0.1740;
-$tarifHC1 = $_POST['tarifHC1'] ?? '1400-1600-0.1402';
+$tarifBase = $_POST['tarifBase'] ?? 0.2062;
+$aboBase = $_POST['aboBase'] ?? 11.93;
+$tarifHP = $_POST['tarifHP'] ?? 0.2228;
+$tarifHC1 = $_POST['tarifHC1'] ?? '1400-1600-0.1615';
 $tarifHC2 = $_POST['tarifHC2'] ?? '';
-$aboHCHP = $_POST['aboHCHP'] ?? 14.82;
-$aboTempo = $_POST['aboTempo'] ?? 15;
+$aboHCHP = $_POST['aboHCHP'] ?? 12.35;
+$aboTempo = $_POST['aboTempo'] ?? 12.28;
+
+$tarifsTempo = [
+    [
+        'start' => DateTime::createFromFormat('Y-m-d H:i:s', '01-02-2023 00:00:00'),
+        'end' => DateTime::createFromFormat('Y-m-d H:i:s', '01-10-2023 00:00:00'),
+        'tarifs' => [
+            'abo' => [
+                6 => 147.36 / 12,
+                9 => 183.96 / 12,
+                12 => 225.36 / 12,
+                15 => 255.24 / 12,
+                18 => 287.76 / 12,
+                24 => 432.72 / 12,
+            ],
+            'TEMPO_BLEU' => [
+                'hp' => 0.1249,
+                'hc' => 0.0970,
+            ],
+            'TEMPO_BLANC' => [
+                'hp' => 0.1508,
+                'hc' => 0.1140,
+            ],
+            'TEMPO_ROUGE' => [
+                'hp' => 0.6712,
+                'hc' => 0.1216,
+            ],
+        ],
+    ],
+//    [
+//        'start' => DateTime::createFromFormat('Y-m-d H:i:s', '01-08-2022 00:00:00'),
+//        'end' => DateTime::createFromFormat('Y-m-d H:i:s', '01-02-2023 00:00:00'),
+//        'tarifs' => [
+//            'abo' => [
+//                9 => 187.32 / 12,
+//                12 => 223.20 / 12,
+//                15 => 235.20 / 12,
+//                18 => 263.40 / 12,
+//                24 => 370.44 / 12,
+//            ],
+//            'TEMPO_BLEU' => [
+//                'hp' => 0.1277,
+//                'hc' => 0.0837,
+//            ],
+//            'TEMPO_BLANC' => [
+//                'hp' => 0.1949,
+//                'hc' => 0.1237,
+//            ],
+//            'TEMPO_ROUGE' => [
+//                'hp' => 0.3250,
+//                'hc' => 0.1341,
+//            ],
+//        ],
+//    ],
+//    [
+//        'start' => DateTime::createFromFormat('Y-m-d H:i:s', '01-02-2022 00:00:00'),
+//        'end' => DateTime::createFromFormat('Y-m-d H:i:s', '01-08-2022 00:00:00'),
+//        'tarifs' => [
+//            'abo' => [
+//                9 => 144.48 / 12,
+//                12 => 173.64 / 12,
+//                15 => 199.56 / 12,
+//                18 => 224.40 / 12,
+//                24 => 336.60 / 12,
+//            ],
+//            'TEMPO_BLEU' => [
+//                'hp' => 0.0984,
+//                'hc' => 0.0642,
+//            ],
+//            'TEMPO_BLANC' => [
+//                'hp' => 0.1301,
+//                'hc' => 0.0850,
+//            ],
+//            'TEMPO_ROUGE' => [
+//                'hp' => 0.4495,
+//                'hc' => 0.0942,
+//            ],
+//        ],
+//    ],
+//    [
+//        'start' => DateTime::createFromFormat('Y-m-d H:i:s', '01-08-2021 00:00:00'),
+//        'end' => DateTime::createFromFormat('Y-m-d H:i:s', '01-02-2022 00:00:00'),
+//        'tarifs' => [
+//            'abo' => [
+//                9 => 145.92 / 12,
+//                12 => 174.96 / 12,
+//                15 => 200.88 / 12,
+//                18 => 225.72 / 12,
+//                24 => 337.92 / 12,
+//            ],
+//            'TEMPO_BLEU' => [
+//                'hp' => 0.0924,
+//                'hc' => 0.0701,
+//            ],
+//            'TEMPO_BLANC' => [
+//                'hp' => 0.1153,
+//                'hc' => 0.0852,
+//            ],
+//            'TEMPO_ROUGE' => [
+//                'hp' => 0.4904,
+//                'hc' => 0.0933,
+//            ],
+//        ],
+//    ],
+//    [
+//        'start' => DateTime::createFromFormat('Y-m-d H:i:s', '01-02-2021 00:00:00'),
+//        'end' => DateTime::createFromFormat('Y-m-d H:i:s', '01-08-2021 00:00:00'),
+//        'tarifs' => [
+//            'abo' => [
+//                9 => 130.08 / 12,
+//                12 => 151.92 / 12,
+//                15 => 170.04 / 12,
+//                18 => 186.24 / 12,
+//                24 => 268.44 / 12,
+//            ],
+//            'TEMPO_BLEU' => [
+//                'hp' => 0.0938,
+//                'hc' => 0.0701,
+//            ],
+//            'TEMPO_BLANC' => [
+//                'hp' => 0.1161,
+//                'hc' => 0.0846,
+//            ],
+//            'TEMPO_ROUGE' => [
+//                'hp' => 0.4905,
+//                'hc' => 0.0925,
+//            ],
+//        ],
+//    ],
+];
+
+//$tempoHistoYear = 2022;
+//while($tempoHistoYear <= date('Y')) {
+////    echo 'https://particulier.edf.fr/services/rest/referentiel/historicTEMPOStore?dateBegin='.$tempoHistoYear.'&dateEnd='.($tempoHistoYear+1); exit;
+//    $json = file_get_contents('https://particulier.edf.fr/services/rest/referentiel/historicTEMPOStore?dateBegin='.$tempoHistoYear.'&dateEnd='.($tempoHistoYear+1));
+////    $json = json_decode(file_get_contents('https://particulier.edf.fr/services/rest/referentiel/historicTEMPOStore?dateBegin='.$tempoHistoYear.'&dateEnd='.($tempoHistoYear+1)), true);
+//    var_dump($json); exit;
+//    $tempoHistoYear++;
+//}
 
 if (isset($_POST['tarifBase']) && isset($_POST['tarifHP']) && isset($_POST['tarifHC1']) && isset($_FILES['conso_file']) && file_exists($_FILES['conso_file']['tmp_name'])) {
     $consos = [];
@@ -16,26 +154,41 @@ if (isset($_POST['tarifBase']) && isset($_POST['tarifHP']) && isset($_POST['tari
     $prevMonth = null;
     $totalConso = 0;
 
+    // Histo Tempo
+    $tempoHistoJson = json_decode(file_get_contents('https://raw.githubusercontent.com/grimmlink/tempo-comparatif/master/tempo.json'),
+        true);
+    foreach ($tempoHistoJson['dates'] as $item) {
+        $tempoHisto[$item['date']] = $item['couleur'];
+    }
+
     // Prepare conso
     if (($handle = fopen($_FILES['conso_file']['tmp_name'], "r")) !== false) {
+        $hasHeader = false;
+        $line = 0;
         while (($data = fgetcsv($handle, 1000, ";")) !== false) {
-            list($date, $conso) = $data;
-
-            $sourceDate = trim(str_replace("﻿", '', $date));
-            $newDate = DateTime::createFromFormat(DATE_ATOM, $sourceDate);
-
-            $month = $newDate->format('n');
-            if (!$prevMonth || $prevMonth !== $month) {
-                $prevMonth = $month;
-                $nbMonths++;
+            if ($line === 0 && $data[0] == '﻿Identifiant PRM') {
+                $hasHeader = true;
             }
 
-            $consos[$newDate->format('U')] = [
-                'date' => $newDate,
-                'val' => $conso,
-            ];
+            if (!$hasHeader || $line > 2) {
+                list($date, $value) = $data;
 
-            $totalConso += floatval($conso);
+                $sourceDate = trim(str_replace("﻿", '', $date));
+                $newDate = DateTime::createFromFormat(DATE_ATOM, $sourceDate);
+
+                $month = $newDate->format('n');
+                if (!$prevMonth || $prevMonth !== $month) {
+                    $prevMonth = $month;
+                    $nbMonths++;
+                }
+
+                $consos[$newDate->format('U')] = [
+                    'date' => $newDate,
+                    'val' => $value,
+                ];
+            }
+
+            $line++;
         }
         fclose($handle);
     }
@@ -44,13 +197,6 @@ if (isset($_POST['tarifBase']) && isset($_POST['tarifHP']) && isset($_POST['tari
 
     $firstDay = $consos[0]['date'];
     $lastDay = $consos[count($consos) - 1]['date'];
-
-    // Histo Tempo
-    $tempoHistoJson = json_decode(file_get_contents('https://raw.githubusercontent.com/grimmlink/tempo-comparatif/master/tempo.json'),
-        true);
-    foreach ($tempoHistoJson['dates'] as $item) {
-        $tempoHisto[$item['date']] = $item['couleur'];
-    }
 
     // HC
     $periodsHC = [];
@@ -73,7 +219,10 @@ if (isset($_POST['tarifBase']) && isset($_POST['tarifHP']) && isset($_POST['tari
     $row = 0;
     while ($row < count($consos)) {
         $interval = 30;
+        /** @var DateTime $currentDate */
         $currentDate = $consos[$row]['date'];
+        $currentHour = (int)$currentDate->format('Hi');
+
         if (isset($consos[$row + 1])) {
             /** @var DateInterval $period */
             $period = $consos[$row + 1]['date']->diff($currentDate);
@@ -93,35 +242,32 @@ if (isset($_POST['tarifBase']) && isset($_POST['tarifHP']) && isset($_POST['tari
 
         $divisionHoraire = (60 / $interval);
 
+        $valueKWH = (int)$consos[$row]['val'] / 1000 / $divisionHoraire;
+
         // Base
-        $priceBase = (int)$consos[$row]['val'] * ($tarifBase / 1000) / $divisionHoraire;
+        $priceBase = $valueKWH * $tarifBase;
 
         // Tempo
-        $isTempoHC = (int)$currentDate->format('Hi') > 2200 || (int)$currentDate->format('Hi') < 600;
-        $couleurTempo = $tempoHisto[$currentDate->format('Y-n-d')] ?? 'TEMPO_BLEU';
-        $tarifTempo = 0.1272;
-        if ($couleurTempo === 'TEMPO_BLEU') {
-            $tarifTempo = $isTempoHC ? 0.0862 : 0.1272;
-        } elseif ($couleurTempo === 'TEMPO_BLANC') {
-            $tarifTempo = $isTempoHC ? 0.1112 : 0.1653;
-        } elseif ($couleurTempo === 'TEMPO_ROUGE') {
-            $tarifTempo = $isTempoHC ? 0.1222 : 0.5486;
-        }
-        $priceTempo = (int)$consos[$row]['val'] * ($tarifTempo / 1000) / $divisionHoraire;
+        $tempoDate = (int)$currentDate->format('Hi') < 600 ? (clone $currentDate) : (clone $currentDate)->sub(new DateInterval('P1D'));
+        $tempoPeriod = $currentHour > 2200 || $currentHour < 600 ? 'hc' : 'hp';
+        $couleurTempo = $tempoHisto[$tempoDate->format('Y-n-d')] ?? 'TEMPO_BLEU';
+        $tarifTempo = $tarifsTempo[0]['tarifs'][$couleurTempo][$tempoPeriod];
+        $priceTempo = $valueKWH * $tarifTempo;
 
         // HC/HP
         $isHC = false;
         $tarifHCHP = $tarifHP;
         foreach ($periodsHC as $periodHC) {
-            if ((int)$currentDate->format('Hi') > $periodHC['start'] || (int)$currentDate->format('Hi') < $periodHC['end']) {
+            if ($currentHour > $periodHC['start'] || $currentHour < $periodHC['end']) {
                 $isHC = true;
                 $tarifHCHP = $periodHC['tarif'];
             }
         }
-        $priceHCHP = (int)$consos[$row]['val'] * ($tarifHCHP / 1000) / $divisionHoraire;
+        $priceHCHP = $valueKWH * $tarifHCHP;
 
         $comparatif[] = [
             $currentDate->format(DATE_ATOM),
+            $valueKWH,
             $tarifBase,
             $priceBase,
             $couleurTempo,
@@ -136,6 +282,8 @@ if (isset($_POST['tarifBase']) && isset($_POST['tarifHP']) && isset($_POST['tari
         $sumTempo += $priceTempo;
         $sumHCHP += $priceHCHP;
 
+        $totalConso += $valueKWH * 1000;
+
         $row++;
     }
 
@@ -147,6 +295,7 @@ if (isset($_POST['tarifBase']) && isset($_POST['tarifHP']) && isset($_POST['tari
         $fp = fopen('php://memory', 'w');
         fputcsv($fp, [
             'Date',
+            'Consommation en kWh',
             'Tarif kWh Base',
             'Prix Base',
             'Couleur Tempo',
@@ -171,7 +320,7 @@ if (isset($_POST['tarifBase']) && isset($_POST['tarifHP']) && isset($_POST['tari
         $totalTable = '
             <h3>
                 Période du '.$consos[0]['date']->format('d/m/Y').' au '.$consos[count($consos) - 1]['date']->format('d/m/Y').'
-                 - Consommation totale : '.($totalConso/1000).' kWh
+                 - Consommation totale : '.($totalConso / 1000).' kWh
             </h3>
             <table class="table table-striped">
                 <tr>
