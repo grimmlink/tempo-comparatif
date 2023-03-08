@@ -250,7 +250,7 @@ if (isset($_POST['tarifBase']) && isset($_POST['tarifHP']) && isset($_POST['tari
         // Tempo
         $tempoDate = (int)$currentDate->format('Hi') < 600 ? (clone $currentDate) : (clone $currentDate)->sub(new DateInterval('P1D'));
         $tempoPeriod = $currentHour > 2200 || $currentHour < 600 ? 'hc' : 'hp';
-        $couleurTempo = $tempoHisto[$tempoDate->format('Y-n-d')] ?? 'TEMPO_BLEU';
+        $couleurTempo = $tempoHisto[$tempoDate->format('Y-n-j')] ?? 'TEMPO_BLEU';
         $tarifTempo = $tarifsTempo[0]['tarifs'][$couleurTempo][$tempoPeriod];
         $priceTempo = $valueKWH * $tarifTempo;
 
