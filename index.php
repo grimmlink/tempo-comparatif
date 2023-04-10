@@ -248,11 +248,14 @@ if (isset($_POST['tarifBase']) && isset($_POST['tarifHP']) && isset($_POST['tari
         $priceBase = $valueKWH * $tarifBase;
 
         // Tempo
-        $tempoDate = (int)$currentDate->format('Hi') < 600 ? (clone $currentDate) : (clone $currentDate)->sub(new DateInterval('P1D'));
-        $tempoPeriod = $currentHour > 2200 || $currentHour < 600 ? 'hc' : 'hp';
+        $tempoDate = (int)$currentDate->format('Hi') > 600 ? (clone $currentDate) : (clone $currentDate)->sub(new DateInterval('P1D'));
+        $tempoPeriod = $currentHour >= 2200 || $currentHour <= 600 ? 'hc' : 'hp';
         $couleurTempo = $tempoHisto[$tempoDate->format('Y-n-j')] ?? 'TEMPO_BLEU';
         $tarifTempo = $tarifsTempo[0]['tarifs'][$couleurTempo][$tempoPeriod];
         $priceTempo = $valueKWH * $tarifTempo;
+
+
+//        echo $currentDate->format('Y-n-j H:i') . ' / ' . $tempoPeriod . ' / ' . $couleurTempo . ' / ' . $tarifTempo . '<br />';
 
         // HC/HP
         $isHC = false;
@@ -289,6 +292,7 @@ if (isset($_POST['tarifBase']) && isset($_POST['tarifHP']) && isset($_POST['tari
 
         $row++;
     }
+//    exit;
 
     $totalBase = $sumBase + $aboBase * $nbMonths;
     $totalTempo = $sumTempo + $aboTempo * $nbMonths;
