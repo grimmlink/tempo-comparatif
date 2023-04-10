@@ -4847,6 +4847,22 @@
         {
             "date": "2023-4-6",
             "couleur": "TEMPO_BLANC"
+        },
+        {
+            "date": "2023-4-7",
+            "couleur": "TEMPO_BLANC"
+        },
+        {
+            "date": "2023-4-8",
+            "couleur": "TEMPO_BLEU"
+        },
+        {
+            "date": "2023-4-9",
+            "couleur": "TEMPO_BLEU"
+        },
+        {
+            "date": "2023-4-10",
+            "couleur": "TEMPO_BLEU"
         }
     ]
 }
