@@ -263,7 +263,7 @@ if (isset($_POST['tarifBase']) && isset($_POST['tarifHP']) && isset($_POST['tari
         foreach ($periodsHC as $periodHC) {
             if (
                 ($periodHC['start'] < $periodHC['end'] && $currentHour > $periodHC['start'] && $currentHour <= $periodHC['end']) // period in the same day
-                 || ($periodHC['start'] > $periodHC['end'] && $currentHour > $periodHC['start']-2400 && $currentHour <= $periodHC['end']) // period across 2 days
+                 || ($periodHC['start'] > $periodHC['end'] && ( $currentHour > $periodHC['start'] || $currentHour <= $periodHC['end'] )) // period across 2 days
             ) {
                 $isHC = true;
                 $tarifHCHP = $periodHC['tarif'];
