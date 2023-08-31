@@ -1,12 +1,12 @@
 <?php
 
-$tarifBase = $_POST['tarifBase'] ?? 0.2062;
-$aboBase = $_POST['aboBase'] ?? 11.93;
-$tarifHP = $_POST['tarifHP'] ?? 0.2228;
-$tarifHC1 = $_POST['tarifHC1'] ?? '1400-1600-0.1615';
+$tarifBase = $_POST['tarifBase'] ?? 0.2276;
+$aboBase = $_POST['aboBase'] ?? 12.44;
+$tarifHP = $_POST['tarifHP'] ?? 0.2460;
+$tarifHC1 = $_POST['tarifHC1'] ?? '1400-1600-0.1828';
 $tarifHC2 = $_POST['tarifHC2'] ?? '';
-$aboHCHP = $_POST['aboHCHP'] ?? 12.35;
-$aboTempo = $_POST['aboTempo'] ?? 12.28;
+$aboHCHP = $_POST['aboHCHP'] ?? 12.85;
+$aboTempo = $_POST['aboTempo'] ?? 12.80;
 
 $tarifsTempo = [
     [
@@ -14,24 +14,25 @@ $tarifsTempo = [
         'end' => DateTime::createFromFormat('Y-m-d H:i:s', '01-10-2023 00:00:00'),
         'tarifs' => [
             'abo' => [
-                6 => 147.36 / 12,
-                9 => 183.96 / 12,
-                12 => 225.36 / 12,
-                15 => 255.24 / 12,
-                18 => 287.76 / 12,
-                24 => 432.72 / 12,
+                6 => 153.60 / 12,
+                9 => 192 / 12,
+                12 => 231.48 / 12,
+                15 => 267.60 / 12,
+                18 => 303.48 / 12,
+                30 => 457.56 / 12,
+                36 => 531.36 / 12,
             ],
             'TEMPO_BLEU' => [
-                'hp' => 0.1249,
-                'hc' => 0.0970,
+                'hp' => 0.1369,
+                'hc' => 0.1056,
             ],
             'TEMPO_BLANC' => [
-                'hp' => 0.1508,
-                'hc' => 0.1140,
+                'hp' => 0.1654,
+                'hc' => 0.1246,
             ],
             'TEMPO_ROUGE' => [
-                'hp' => 0.6712,
-                'hc' => 0.1216,
+                'hp' => 0.7324,
+                'hc' => 0.1328,
             ],
         ],
     ],
