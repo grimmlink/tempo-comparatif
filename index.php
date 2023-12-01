@@ -437,10 +437,11 @@ if (isset($_POST['tarifBase']) && isset($_POST['tarifHP']) && isset($_POST['tari
                     echo $aboTempo; ?>" placeholder="15">
                 </div>
                 <div class="col">
-                    <label for="conso_file" class="form-label">Fichier de conso (CSV)</label>
+                    <label for="conso_file" class="form-label">Fichier de consommations <b>horaires</b> (CSV)</label>
                     <input type="file" class="form-control" name="conso_file" id="conso_file">
                     <p class="small">
-                        Fichier CSV récupéré sur <a href="https://mon-compte-particulier.enedis.fr/suivi-de-mesures">Enedis</a>
+                        <i>Fichier CSV à récupéré sur <a href="https://mon-compte-particulier.enedis.fr/suivi-de-mesures">Enedis.<br/>
+                        Pensez à collecter les consommations horaires sur <a href="https://mon-compte-particulier.enedis.fr/donnees/"> Enedis !</i>
                     </p>
                 </div>
             </div>
