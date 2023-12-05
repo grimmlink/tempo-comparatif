@@ -337,21 +337,21 @@ if (isset($_FILES['conso_file']) && file_exists($_FILES['conso_file']['tmp_name'
                 <div class="col">
                     <label for="tarifHP" class="form-label">Tarif HP</label>
                     <input type="text" class="form-control" name="tarifHP" id="tarifHP" value="<?php
-                    echo $tarifHP; ?>" placeholder="0,1740;1400-1600-0,1402;0000-0600-0,1402">
+                    echo $tarifHP; ?>" placeholder="<?php echo $tarifHP; ?>">
                 </div>
                 <div class="col">
                     <label for="tarifHC1" class="form-label">Tarif HC 1</label>
                     <input type="text" class="form-control" name="tarifHC1" id="tarifHC1" value="<?php
-                    echo $tarifHC1; ?>" placeholder="1400-1600-0,1402">
+                    echo $tarifHC1; ?>" placeholder="<?php echo $tarifHC1; ?>">
                     <p class="small">Format : <code>début[hhmm]-fin[hhmm]-tarif</code>.<br/>Exemple :
-                        <code>1400-1600-0.1402</code></p>
+                        <code><?php echo $tarifHC1; ?></code></p>
                 </div>
                 <div class="col">
                     <label for="tarifHC2" class="form-label">Tarif HC 2</label>
                     <input type="text" class="form-control" name="tarifHC2" id="tarifHC2" value="<?php
-                    echo $tarifHC2; ?>" placeholder="0000-0600-0.1402">
+                    echo $tarifHC2; ?>" placeholder="<?php echo $tarifHC2; ?>">
                     <p class="small">Format : <code>début[hhmm]-fin[hhmm]-tarif</code>.<br/>Exemple :
-                        <code>0000-0600-0.1402</code></p>
+                        <code><?php echo $tarifHC2; ?></code></p>
                 </div>
             </div>
         </fieldset>
