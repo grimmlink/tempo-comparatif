@@ -1,156 +1,63 @@
 <?php
 
+$tarifsTempo = [
+    'abo' => [
+        6 => 153.60 / 12,
+        9 => 192 / 12,
+        12 => 231.48 / 12,
+        15 => 267.60 / 12,
+        18 => 303.48 / 12,
+        30 => 457.56 / 12,
+        36 => 531.36 / 12,
+    ],
+    'TEMPO_BLEU' => [
+        'hp' => 0.1369,
+        'hc' => 0.1056,
+    ],
+    'TEMPO_BLANC' => [
+        'hp' => 0.1654,
+        'hc' => 0.1246,
+    ],
+    'TEMPO_ROUGE' => [
+        'hp' => 0.7324,
+        'hc' => 0.1328,
+    ],
+];
+
+$tarifsZenFlex = [
+    'abo' => [
+        6 => 13.03,
+        9 => 16.55,
+        12 => 19.97,
+        15 => 23.24,
+        18 => 26.48,
+        24 => 33.28,
+        30 => 39.46,
+        36 => 45.72,
+    ],
+    'eco' => [
+        'hp' => 0.2460,
+        'hc' => 0.1464,
+    ],
+    'sobriete' => [
+        'hp' => 0.7324,
+        'hc' => 0.2460,
+    ],
+];
+
 $tarifBase = $_POST['tarifBase'] ?? 0.2276;
 $aboBase = $_POST['aboBase'] ?? 12.44;
 $tarifHP = $_POST['tarifHP'] ?? 0.2460;
 $tarifHC1 = $_POST['tarifHC1'] ?? '1400-1600-0.1828';
-$tarifHC2 = $_POST['tarifHC2'] ?? '';
+$tarifHC2 = $_POST['tarifHC2'] ?? '0000-0600-0.1828';
 $aboHCHP = $_POST['aboHCHP'] ?? 12.85;
-$aboTempo = $_POST['aboTempo'] ?? 12.80;
+$aboTempo = $_POST['aboTempo'] ?? $tarifsTempo['abo'][6];
+$aboZenFlex = $_POST['aboZenFlex'] ?? $tarifsZenFlex['abo'][6];
 
-$tarifsTempo = [
-    [
-        'start' => DateTime::createFromFormat('Y-m-d H:i:s', '01-02-2023 00:00:00'),
-        'end' => DateTime::createFromFormat('Y-m-d H:i:s', '01-10-2023 00:00:00'),
-        'tarifs' => [
-            'abo' => [
-                6 => 153.60 / 12,
-                9 => 192 / 12,
-                12 => 231.48 / 12,
-                15 => 267.60 / 12,
-                18 => 303.48 / 12,
-                30 => 457.56 / 12,
-                36 => 531.36 / 12,
-            ],
-            'TEMPO_BLEU' => [
-                'hp' => 0.1369,
-                'hc' => 0.1056,
-            ],
-            'TEMPO_BLANC' => [
-                'hp' => 0.1654,
-                'hc' => 0.1246,
-            ],
-            'TEMPO_ROUGE' => [
-                'hp' => 0.7324,
-                'hc' => 0.1328,
-            ],
-        ],
-    ],
-//    [
-//        'start' => DateTime::createFromFormat('Y-m-d H:i:s', '01-08-2022 00:00:00'),
-//        'end' => DateTime::createFromFormat('Y-m-d H:i:s', '01-02-2023 00:00:00'),
-//        'tarifs' => [
-//            'abo' => [
-//                9 => 187.32 / 12,
-//                12 => 223.20 / 12,
-//                15 => 235.20 / 12,
-//                18 => 263.40 / 12,
-//                24 => 370.44 / 12,
-//            ],
-//            'TEMPO_BLEU' => [
-//                'hp' => 0.1277,
-//                'hc' => 0.0837,
-//            ],
-//            'TEMPO_BLANC' => [
-//                'hp' => 0.1949,
-//                'hc' => 0.1237,
-//            ],
-//            'TEMPO_ROUGE' => [
-//                'hp' => 0.3250,
-//                'hc' => 0.1341,
-//            ],
-//        ],
-//    ],
-//    [
-//        'start' => DateTime::createFromFormat('Y-m-d H:i:s', '01-02-2022 00:00:00'),
-//        'end' => DateTime::createFromFormat('Y-m-d H:i:s', '01-08-2022 00:00:00'),
-//        'tarifs' => [
-//            'abo' => [
-//                9 => 144.48 / 12,
-//                12 => 173.64 / 12,
-//                15 => 199.56 / 12,
-//                18 => 224.40 / 12,
-//                24 => 336.60 / 12,
-//            ],
-//            'TEMPO_BLEU' => [
-//                'hp' => 0.0984,
-//                'hc' => 0.0642,
-//            ],
-//            'TEMPO_BLANC' => [
-//                'hp' => 0.1301,
-//                'hc' => 0.0850,
-//            ],
-//            'TEMPO_ROUGE' => [
-//                'hp' => 0.4495,
-//                'hc' => 0.0942,
-//            ],
-//        ],
-//    ],
-//    [
-//        'start' => DateTime::createFromFormat('Y-m-d H:i:s', '01-08-2021 00:00:00'),
-//        'end' => DateTime::createFromFormat('Y-m-d H:i:s', '01-02-2022 00:00:00'),
-//        'tarifs' => [
-//            'abo' => [
-//                9 => 145.92 / 12,
-//                12 => 174.96 / 12,
-//                15 => 200.88 / 12,
-//                18 => 225.72 / 12,
-//                24 => 337.92 / 12,
-//            ],
-//            'TEMPO_BLEU' => [
-//                'hp' => 0.0924,
-//                'hc' => 0.0701,
-//            ],
-//            'TEMPO_BLANC' => [
-//                'hp' => 0.1153,
-//                'hc' => 0.0852,
-//            ],
-//            'TEMPO_ROUGE' => [
-//                'hp' => 0.4904,
-//                'hc' => 0.0933,
-//            ],
-//        ],
-//    ],
-//    [
-//        'start' => DateTime::createFromFormat('Y-m-d H:i:s', '01-02-2021 00:00:00'),
-//        'end' => DateTime::createFromFormat('Y-m-d H:i:s', '01-08-2021 00:00:00'),
-//        'tarifs' => [
-//            'abo' => [
-//                9 => 130.08 / 12,
-//                12 => 151.92 / 12,
-//                15 => 170.04 / 12,
-//                18 => 186.24 / 12,
-//                24 => 268.44 / 12,
-//            ],
-//            'TEMPO_BLEU' => [
-//                'hp' => 0.0938,
-//                'hc' => 0.0701,
-//            ],
-//            'TEMPO_BLANC' => [
-//                'hp' => 0.1161,
-//                'hc' => 0.0846,
-//            ],
-//            'TEMPO_ROUGE' => [
-//                'hp' => 0.4905,
-//                'hc' => 0.0925,
-//            ],
-//        ],
-//    ],
-];
-
-//$tempoHistoYear = 2022;
-//while($tempoHistoYear <= date('Y')) {
-////    echo 'https://particulier.edf.fr/services/rest/referentiel/historicTEMPOStore?dateBegin='.$tempoHistoYear.'&dateEnd='.($tempoHistoYear+1); exit;
-//    $json = file_get_contents('https://particulier.edf.fr/services/rest/referentiel/historicTEMPOStore?dateBegin='.$tempoHistoYear.'&dateEnd='.($tempoHistoYear+1));
-////    $json = json_decode(file_get_contents('https://particulier.edf.fr/services/rest/referentiel/historicTEMPOStore?dateBegin='.$tempoHistoYear.'&dateEnd='.($tempoHistoYear+1)), true);
-//    var_dump($json); exit;
-//    $tempoHistoYear++;
-//}
-
-if (isset($_POST['tarifBase']) && isset($_POST['tarifHP']) && isset($_POST['tarifHC1']) && isset($_FILES['conso_file']) && file_exists($_FILES['conso_file']['tmp_name'])) {
+if (isset($_FILES['conso_file']) && file_exists($_FILES['conso_file']['tmp_name'])) {
     $consos = [];
 
-    $sumBase = $sumTempo = $sumHCHP = 0;
+    $sumBase = $sumTempo = $sumHCHP = $sumZenFlex = 0;
     $nbMonths = 0;
     $prevMonth = null;
     $totalConso = 0;
@@ -252,9 +159,15 @@ if (isset($_POST['tarifBase']) && isset($_POST['tarifHP']) && isset($_POST['tari
         $tempoDate = (int)$currentDate->format('Hi') > 600 ? (clone $currentDate) : (clone $currentDate)->sub(new DateInterval('P1D'));
         $tempoPeriod = $currentHour > 2200 || $currentHour <= 600 ? 'hc' : 'hp';
         $couleurTempo = $tempoHisto[$tempoDate->format('Y-n-j')] ?? 'TEMPO_BLEU';
-        $tarifTempo = $tarifsTempo[0]['tarifs'][$couleurTempo][$tempoPeriod];
+        $tarifTempo = $tarifsTempo[$couleurTempo][$tempoPeriod];
         $priceTempo = $valueKWH * $tarifTempo;
 
+        // ZenFlex
+        $zenFlexDate = clone $currentDate;
+        $zenFlexPeriod = ($currentHour > 800 && $currentHour <= 1300) || ($currentHour > 1800 && $currentHour <= 2000) ? 'hp' : 'hc';
+        $couleurZenFlex = $couleurTempo === 'TEMPO_ROUGE' ? 'sobriete' : 'eco';
+        $tarifZenFlex = $tarifsZenFlex[$couleurZenFlex][$zenFlexPeriod];
+        $priceZenFlex = $valueKWH * $tarifZenFlex;
 
 //        echo $currentDate->format('Y-n-j H:i') . ' / ' . $tempoPeriod . ' / ' . $couleurTempo . ' / ' . $tarifTempo . '<br />';
 
@@ -280,6 +193,9 @@ if (isset($_POST['tarifBase']) && isset($_POST['tarifHP']) && isset($_POST['tari
             $couleurTempo,
             $tarifTempo,
             $priceTempo,
+            $couleurZenFlex,
+            $tarifZenFlex,
+            $priceZenFlex,
             $isHC ? 'oui' : 'non',
             $tarifHCHP,
             $priceHCHP,
@@ -287,6 +203,7 @@ if (isset($_POST['tarifBase']) && isset($_POST['tarifHP']) && isset($_POST['tari
 
         $sumBase += $priceBase;
         $sumTempo += $priceTempo;
+        $sumZenFlex += $priceZenFlex;
         $sumHCHP += $priceHCHP;
 
         $totalConso += $valueKWH * 1000;
@@ -297,6 +214,7 @@ if (isset($_POST['tarifBase']) && isset($_POST['tarifHP']) && isset($_POST['tari
 
     $totalBase = $sumBase + $aboBase * $nbMonths;
     $totalTempo = $sumTempo + $aboTempo * $nbMonths;
+    $totalZenFlex = $sumZenFlex + $aboZenFlex * $nbMonths;
     $totalHCHP = $sumHCHP + $aboHCHP * $nbMonths;
 
     if (isset($_POST['export']) && $_POST['export'] === 'oui') {
@@ -309,6 +227,9 @@ if (isset($_POST['tarifBase']) && isset($_POST['tarifHP']) && isset($_POST['tari
             'Couleur Tempo',
             'Tarif kWh Tempo',
             'Total Tempo',
+            'Couleur ZenFlex',
+            'Tarif kWh ZenFlex',
+            'Total ZenFlex',
             'HC?',
             'Tarif kWh HC/HP',
             'Total HC/HP',
@@ -351,6 +272,13 @@ if (isset($_POST['tarifBase']) && isset($_POST['tarifHP']) && isset($_POST['tari
                     <td>'.number_format($sumTempo, 2).'€</td>
                     <td>'.number_format($totalTempo, 2).'€</td>
                     <td>'.number_format(100 - (100 * $totalTempo / $totalBase), 2).'%</td>
+                </tr>
+                <tr>
+                    <th>ZenFlex</th>
+                    <td>'.number_format($aboZenFlex * $nbMonths, 2).'€</td>
+                    <td>'.number_format($sumZenFlex, 2).'€</td>
+                    <td>'.number_format($totalZenFlex, 2).'€</td>
+                    <td>'.number_format(100 - (100 * $totalZenFlex / $totalBase), 2).'%</td>
                 </tr>
                 <tr>
                     <th>HC/HP</th>
@@ -428,20 +356,42 @@ if (isset($_POST['tarifBase']) && isset($_POST['tarifHP']) && isset($_POST['tari
             </div>
         </fieldset>
 
+        <div class="row mb-3">
+            <div class="col">
+                <fieldset>
+                    <legend>Tempo</legend>
+                    <div class="row mb-3">
+                        <div class="col">
+                            <label for="aboTempo" class="form-label">Abonnement Tempo</label>
+                            <input type="text" class="form-control" name="aboTempo" id="aboTempo" value="<?php
+                            echo $aboTempo; ?>" placeholder="15">
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+            <div class="col">
+                <fieldset>
+                    <legend>ZenFlex</legend>
+                    <div class="row mb-3">
+                        <div class="col">
+                            <label for="aboZenFlex" class="form-label">Abonnement ZenFlex</label>
+                            <input type="text" class="form-control" name="aboZenFlex" id="aboZenFlex" value="<?php
+                            echo $aboZenFlex; ?>" placeholder="15">
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+        </div>
+
         <fieldset>
             <legend>Consommation</legend>
             <div class="row mb-3">
                 <div class="col">
-                    <label for="aboTempo" class="form-label">Abonnement Tempo</label>
-                    <input type="text" class="form-control" name="aboTempo" id="aboTempo" value="<?php
-                    echo $aboTempo; ?>" placeholder="15">
-                </div>
-                <div class="col">
                     <label for="conso_file" class="form-label">Fichier de consommations <b>horaires</b> (CSV)</label>
                     <input type="file" class="form-control" name="conso_file" id="conso_file">
                     <p class="small">
-                        <i>Fichier CSV à récupéré sur <a href="https://mon-compte-particulier.enedis.fr/suivi-de-mesures">Enedis.<br/>
-                        Pensez à collecter les consommations horaires sur <a href="https://mon-compte-particulier.enedis.fr/donnees/"> Enedis !</i>
+                        <i>Fichier CSV à récupéré sur <a href="https://mon-compte-particulier.enedis.fr/mes-telechargements-mesures" target="_blank">Enedis.</a><br/>
+                        Pensez à collecter les consommations horaires sur <a href="https://mon-compte-particulier.enedis.fr/donnees/" target="_blank"> Enedis !</a></i>
                     </p>
                 </div>
             </div>
