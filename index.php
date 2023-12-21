@@ -390,7 +390,7 @@ if (isset($_FILES['conso_file']) && file_exists($_FILES['conso_file']['tmp_name'
                     <label for="conso_file" class="form-label">Fichier de consommations <b>horaires</b> (CSV)</label>
                     <input type="file" class="form-control" name="conso_file" id="conso_file">
                     <p class="small">
-                        <i>Fichier CSV à récupéré sur <a href="https://mon-compte-particulier.enedis.fr/mes-telechargements-mesures" target="_blank">Enedis.</a><br/>
+                        <i>Fichier CSV à récupérer sur <a href="https://mon-compte-particulier.enedis.fr/mes-telechargements-mesures" target="_blank">Enedis.</a><br/>
                         Pensez à collecter les consommations horaires sur <a href="https://mon-compte-particulier.enedis.fr/donnees/" target="_blank"> Enedis !</a></i>
                     </p>
                 </div>
