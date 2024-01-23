@@ -63,7 +63,7 @@ if (isset($_FILES['conso_file']) && file_exists($_FILES['conso_file']['tmp_name'
     $totalConso = 0;
 
     // Histo Tempo
-    $tempoHistoJson = json_decode(file_get_contents('https://raw.githubusercontent.com/grimmlink/tempo-comparatif/master/tempo.json'),
+    $tempoHistoJson = json_decode(file_get_contents('https://raw.githubusercontent.com/JbPasquier/tarifelec-vjs/main/tempo.json'),
         true);
     foreach ($tempoHistoJson['dates'] as $item) {
         $tempoHisto[$item['date']] = $item['couleur'];
