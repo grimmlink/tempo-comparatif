@@ -2,25 +2,25 @@
 
 $tarifsTempo = [
     'abo' => [
-        6 => 153.60 / 12,
-        9 => 192 / 12,
-        12 => 231.48 / 12,
-        15 => 267.60 / 12,
-        18 => 303.48 / 12,
-        30 => 457.56 / 12,
-        36 => 531.36 / 12,
+        6 => 12.96,
+        9 => 16.16,
+        12 => 19.44,
+        15 => 22.45,
+        18 => 25.44,
+        30 => 38.29,
+        36 => 44.42,
     ],
     'TEMPO_BLEU' => [
-        'hp' => 0.1369,
-        'hc' => 0.1056,
+        'hp' => 0.1609,
+        'hc' => 0.1296,
     ],
     'TEMPO_BLANC' => [
-        'hp' => 0.1654,
-        'hc' => 0.1246,
+        'hp' => 0.1894,
+        'hc' => 0.1486,
     ],
     'TEMPO_ROUGE' => [
-        'hp' => 0.7324,
-        'hc' => 0.1328,
+        'hp' => 0.7562,
+        'hc' => 0.1568,
     ],
 ];
 
@@ -36,21 +36,21 @@ $tarifsZenFlex = [
         36 => 45.72,
     ],
     'eco' => [
-        'hp' => 0.2460,
-        'hc' => 0.1464,
+        'hp' => 0.2700,
+        'hc' => 0.1704,
     ],
     'sobriete' => [
-        'hp' => 0.7324,
-        'hc' => 0.2460,
+        'hp' => 0.7564,
+        'hc' => 0.2700,
     ],
 ];
 
-$tarifBase = $_POST['tarifBase'] ?? 0.2276;
-$aboBase = $_POST['aboBase'] ?? 12.44;
-$tarifHP = $_POST['tarifHP'] ?? 0.2460;
-$tarifHC1 = $_POST['tarifHC1'] ?? '1400-1600-0.1828';
-$tarifHC2 = $_POST['tarifHC2'] ?? '0000-0600-0.1828';
-$aboHCHP = $_POST['aboHCHP'] ?? 12.85;
+$tarifBase = $_POST['tarifBase'] ?? 0.2516;
+$aboBase = $_POST['aboBase'] ?? 12.60;
+$tarifHP = $_POST['tarifHP'] ?? 0.2700;
+$tarifHC1 = $_POST['tarifHC1'] ?? '1400-1600-0.2068';
+$tarifHC2 = $_POST['tarifHC2'] ?? '0000-0600-0.2068';
+$aboHCHP = $_POST['aboHCHP'] ?? 16.70;
 $aboTempo = $_POST['aboTempo'] ?? $tarifsTempo['abo'][6];
 $aboZenFlex = $_POST['aboZenFlex'] ?? $tarifsZenFlex['abo'][6];
 
