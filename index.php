@@ -50,7 +50,7 @@ $aboBase = $_POST['aboBase'] ?? 12.60;
 $tarifHP = $_POST['tarifHP'] ?? 0.2700;
 $tarifHC1 = $_POST['tarifHC1'] ?? '1400-1600-0.2068';
 $tarifHC2 = $_POST['tarifHC2'] ?? '0000-0600-0.2068';
-$aboHCHP = $_POST['aboHCHP'] ?? 16.70;
+$aboHCHP = $_POST['aboHCHP'] ?? 13.01;
 $aboTempo = $_POST['aboTempo'] ?? $tarifsTempo['abo'][6];
 $aboZenFlex = $_POST['aboZenFlex'] ?? $tarifsZenFlex['abo'][6];
 
