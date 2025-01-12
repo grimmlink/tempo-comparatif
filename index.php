@@ -1,5 +1,36 @@
 <?php
 
+$tarifsBase = [
+    'abo' => [
+        6  =>  12.68,
+        9  =>  15.89,
+        12 =>  19.16,
+        15 =>  22.07,
+        18 =>  25.24,
+        24 =>  31.96,
+        30 =>  37.68,
+        36 =>  44.43,
+    ],
+    'base' => 0.2516
+];
+
+$tarifsHCHP = [
+    'abo' => [
+        6  => 13.09,
+        9  => 16.70,
+        12 => 20.28,
+        15 => 23.57,
+        18 => 26.84,
+        24 => 33.70,
+        30 => 38.97,
+        36 => 45.08,
+    ],
+    'hchp' => [
+        'hp' => 0.2700,
+        'hc' => 0.2068,
+    ],
+];
+
 $tarifsTempo = [
     'abo' => [
         6  => 13.03,
@@ -26,28 +57,27 @@ $tarifsTempo = [
 
 $tarifsZenFlex = [
     'abo' => [
-        6 => 13.03,
-        9 => 16.55,
-        12 => 19.97,
-        15 => 23.24,
-        18 => 26.48,
-        24 => 33.28,
-        30 => 39.46,
-        36 => 45.72,
+        6  => 13.09,
+        9  => 16.82,
+        12 => 20.28,
+        15 => 23.57,
+        18 => 26.84,
+        24 => 33.70,
+        30 => 39.94,
+        36 => 46.24,
     ],
     'eco' => [
         'hp' => 0.2700,
-        'hc' => 0.1704,
+        'hc' => 0.1795,
     ],
     'sobriete' => [
-        'hp' => 0.7564,
+        'hp' => 0.7562,
         'hc' => 0.2700,
     ],
 ];
 
 $tarifsZenFixe = [
     'abo' => [
-        3  => 9.69,
         6  => 12.67,
         9  => 15.89,
         12 => 19.16,
@@ -64,15 +94,20 @@ $tarifsZenFixe = [
     'base' => 0.1753,
 ];
 
-$tarifBase = $_POST['tarifBase'] ?? 0.2516;
-$aboBase = $_POST['aboBase'] ?? 12.68;
-$tarifHP = $_POST['tarifHP'] ?? 0.2700;
-$tarifHC1 = $_POST['tarifHC1'] ?? '1400-1600-0.2068';
-$tarifHC2 = $_POST['tarifHC2'] ?? '0000-0600-0.2068';
-$aboHCHP = $_POST['aboHCHP'] ?? 13.09;
-$aboTempo = $_POST['aboTempo'] ?? $tarifsTempo['abo'][6];
-$aboZenFlex = $_POST['aboZenFlex'] ?? $tarifsZenFlex['abo'][6];
-$aboZenFixe = $_POST['aboZenFixe'] ?? $tarifsZenFixe['abo'][6];
+$puissance = $_POST['puissance'] ?? 6;
+
+$aboBase = $tarifsBase['abo'][$puissance];
+$tarifBase = $tarifsBase['base'];
+
+$aboHCHP = $tarifsHCHP['abo'][$puissance];
+$tarifHP = $tarifsHCHP['hchp']['hp'];
+$tarifHC = $tarifsHCHP['hchp']['hc'];
+$periodHC1 = $_POST['periodHC1'] ?? '1400-1600';
+$periodHC2 = $_POST['periodHC2'] ?? '0000-0600';
+
+$aboTempo = $tarifsTempo['abo'][$puissance];
+$aboZenFlex = $tarifsZenFlex['abo'][$puissance];
+$aboZenFixe = $tarifsZenFixe['abo'][$puissance];
 $optionZenFixe = $_POST['optionZenFixe'] ?? 'hchp';
 
 if (isset($_FILES['conso_file']) && file_exists($_FILES['conso_file']['tmp_name'])) {
@@ -88,6 +123,15 @@ if (isset($_FILES['conso_file']) && file_exists($_FILES['conso_file']['tmp_name'
         true);
     foreach ($tempoHistoJson['dates'] as $item) {
         $tempoHisto[$item['date']] = $item['couleur'];
+    }
+    // Histo ZenFlex
+    $zenflexHisto = [];
+    $zenflexHistoJson = json_decode(file_get_contents('https://raw.githubusercontent.com/masfaraud/ZenFlex/refs/heads/master/data.json'),
+        true);
+    foreach ($zenflexHistoJson['sobriete'] as $dateText) {
+        $dateParse = date_parse($dateText);
+        $date = $dateParse['year'] . '-' . $dateParse['month'] . '-' . $dateParse['day'];
+        $zenflexHisto[$date] = 'sobriete';
     }
 
     // Prepare conso
@@ -129,18 +173,16 @@ if (isset($_FILES['conso_file']) && file_exists($_FILES['conso_file']['tmp_name'
 
     // HC
     $periodsHC = [];
-    list($start, $end, $tarif) = explode('-', $tarifHC1);
+    list($start, $end) = explode('-', $periodHC1);
     $periodsHC[] = [
         'start' => (int)$start,
         'end' => (int)$end,
-        'tarif' => floatval(str_replace(',', '.', $tarif)),
     ];
-    if ($tarifHC2 !== '') {
-        list($start, $end, $tarif) = explode('-', $tarifHC2);
+    if ($periodHC2 !== '') {
+        list($start, $end, $tarif) = explode('-', $periodHC2);
         $periodsHC[] = [
             'start' => (int)$start,
             'end' => (int)$end,
-            'tarif' => floatval(str_replace(',', '.', $tarif)),
         ];
     }
 
@@ -186,7 +228,7 @@ if (isset($_FILES['conso_file']) && file_exists($_FILES['conso_file']['tmp_name'
         // ZenFlex
         $zenFlexDate = clone $currentDate;
         $zenFlexPeriod = ($currentHour > 800 && $currentHour <= 1300) || ($currentHour > 1800 && $currentHour <= 2000) ? 'hp' : 'hc';
-        $couleurZenFlex = $couleurTempo === 'TEMPO_ROUGE' ? 'sobriete' : 'eco';
+        $couleurZenFlex = array_key_exists($zenFlexDate->format('Y-m-d'), $zenflexHisto) ? 'sobriete' : 'eco';
         $tarifZenFlex = $tarifsZenFlex[$couleurZenFlex][$zenFlexPeriod];
         $priceZenFlex = $valueKWH * $tarifZenFlex;
 
@@ -201,10 +243,10 @@ if (isset($_FILES['conso_file']) && file_exists($_FILES['conso_file']['tmp_name'
                  || ($periodHC['start'] > $periodHC['end'] && ( $currentHour > $periodHC['start'] || $currentHour <= $periodHC['end'] )) // period across 2 days
             ) {
                 $isHC = true;
-                $tarifHCHP = $periodHC['tarif'];
+                $tarifHCHP = $tarifHC;
             }
         }
-        $priceHCHP = $isHC ? $valueKWH * $periodHC['tarif'] : $valueKWH * $tarifHP;
+        $priceHCHP = $valueKWH * $tarifHCHP;
 
 
         // ZenFixe
@@ -352,102 +394,48 @@ if (isset($_FILES['conso_file']) && file_exists($_FILES['conso_file']['tmp_name'
         crossorigin="anonymous"></script>
 
 <div class="container">
-    <h1>Comparatif de facture Base / HC / Tempo</h1>
+    <h1>Comparatif de facture Base / HC / Tempo / ZenFlex / ZenFixe</h1>
 
     <form action="/" method="POST" enctype="multipart/form-data">
+
         <fieldset>
-            <legend>BASE</legend>
+            <legend>PERSONALISATION</legend>
             <div class="row mb-3">
                 <div class="col">
-                    <label for="aboBase" class="form-label">Abonnement mensuel base</label>
-                    <input type="text" class="form-control" name="aboBase" id="aboBase" value="<?php
-                    echo $aboBase; ?>" placeholder="15">
+                    <label for="puissance" class="form-label">Puissance (kVA)</label>
+                    <select class="form-control" name="puissance" id="puissance">
+                        <option value="6" <?php echo $puissance === 6 ? 'selected' : '' ?>>6</option>
+                        <option value="9" <?php echo $puissance === 9 ? 'selected' : '' ?>>9</option>
+                        <option value="12" <?php echo $puissance === 12 ? 'selected' : '' ?>>12</option>
+                        <option value="15" <?php echo $puissance === 15 ? 'selected' : '' ?>>15</option>
+                        <option value="18" <?php echo $puissance === 18 ? 'selected' : '' ?>>18</option>
+                        <option value="30" <?php echo $puissance === 30 ? 'selected' : '' ?>>30</option>
+                        <option value="36" <?php echo $puissance === 36 ? 'selected' : '' ?>>36</option>
+                    </select>
                 </div>
                 <div class="col">
-                    <label for="tarifBase" class="form-label">Tarif base</label>
-                    <input type="text" class="form-control" name="tarifBase" id="tarifBase" value="<?php
-                    echo $tarifBase; ?>" placeholder="0.1659">
+                    <label for="periodHC1" class="form-label">Période HC 1</label>
+                    <input type="text" class="form-control" name="periodHC1" id="periodHC1" value="<?php
+                    echo $periodHC1; ?>" placeholder="<?php echo $periodHC1; ?>">
+                    <p class="small">Format : <code>début[hhmm]-fin[hhmm]</code>.<br/>Exemple :
+                        <code><?php echo $periodHC1; ?></code></p>
+                </div>
+                <div class="col">
+                    <label for="periodHC2" class="form-label">Période HC 2</label>
+                    <input type="text" class="form-control" name="periodHC2" id="periodHC2" value="<?php
+                    echo $periodHC2; ?>" placeholder="<?php echo $periodHC2; ?>">
+                    <p class="small">Format : <code>début[hhmm]-fin[hhmm]</code>.<br/>Exemple :
+                        <code><?php echo $periodHC2; ?></code></p>
+                </div>
+                <div class="col">
+                    <label for="aboZenFixe" class="form-label">Option ZenFixe</label>
+                    <select class="form-control" name="optionZenFixe" id="optionZenFixe">
+                        <option value="hchp" <?php echo $optionZenFixe === 'hchp' ? 'selected' : '' ?>>HC/HP</option>
+                        <option value="base" <?php echo $optionZenFixe === 'base' ? 'selected' : '' ?>>Base</option>
+                    </select>
                 </div>
             </div>
         </fieldset>
-
-        <fieldset>
-            <legend>HC/HP</legend>
-            <div class="row mb-3">
-                <div class="col">
-                    <label for="aboHCHP" class="form-label">Abonnement HC/HP</label>
-                    <input type="text" class="form-control" name="aboHCHP" id="aboHCHP" value="<?php
-                    echo $aboHCHP; ?>" placeholder="15">
-                </div>
-                <div class="col">
-                    <label for="tarifHP" class="form-label">Tarif HP</label>
-                    <input type="text" class="form-control" name="tarifHP" id="tarifHP" value="<?php
-                    echo $tarifHP; ?>" placeholder="<?php echo $tarifHP; ?>">
-                </div>
-                <div class="col">
-                    <label for="tarifHC1" class="form-label">Tarif HC 1</label>
-                    <input type="text" class="form-control" name="tarifHC1" id="tarifHC1" value="<?php
-                    echo $tarifHC1; ?>" placeholder="<?php echo $tarifHC1; ?>">
-                    <p class="small">Format : <code>début[hhmm]-fin[hhmm]-tarif</code>.<br/>Exemple :
-                        <code><?php echo $tarifHC1; ?></code></p>
-                </div>
-                <div class="col">
-                    <label for="tarifHC2" class="form-label">Tarif HC 2</label>
-                    <input type="text" class="form-control" name="tarifHC2" id="tarifHC2" value="<?php
-                    echo $tarifHC2; ?>" placeholder="<?php echo $tarifHC2; ?>">
-                    <p class="small">Format : <code>début[hhmm]-fin[hhmm]-tarif</code>.<br/>Exemple :
-                        <code><?php echo $tarifHC2; ?></code></p>
-                </div>
-            </div>
-        </fieldset>
-
-        <div class="row mb-3">
-            <div class="col">
-                <fieldset>
-                    <legend>Tempo</legend>
-                    <div class="row mb-3">
-                        <div class="col">
-                            <label for="aboTempo" class="form-label">Abonnement Tempo</label>
-                            <input type="text" class="form-control" name="aboTempo" id="aboTempo" value="<?php
-                            echo $aboTempo; ?>" placeholder="15">
-                        </div>
-                    </div>
-                </fieldset>
-            </div>
-            <div class="col">
-                <fieldset>
-                    <legend>ZenFlex</legend>
-                    <div class="row mb-3">
-                        <div class="col">
-                            <label for="aboZenFlex" class="form-label">Abonnement ZenFlex</label>
-                            <input type="text" class="form-control" name="aboZenFlex" id="aboZenFlex" value="<?php
-                            echo $aboZenFlex; ?>" placeholder="15">
-                        </div>
-                    </div>
-                </fieldset>
-            </div>
-            <div class="col">
-                <fieldset>
-                    <legend>ZenFixe</legend>
-                    <div class="row mb-3">
-                        <div class="col">
-                            <label for="aboZenFixe" class="form-label">Abonnement ZenFixe</label>
-                            <input type="text" class="form-control" name="aboZenFixe" id="aboZenFixe" value="<?php
-                            echo $aboZenFixe; ?>" placeholder="15">
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col">
-                            <label for="aboZenFixe" class="form-label">Option ZenFixe</label>
-                            <select class="form-control" name="optionZenFixe" id="optionZenFixe">
-                                <option value="hchp" <?php echo $optionZenFixe === 'hchp' ? 'selected' : '' ?>>HC/HP</option>
-                                <option value="base" <?php echo $optionZenFixe === 'base' ? 'selected' : '' ?>>Base</option>
-                            </select>
-                        </div>
-                    </div>
-                </fieldset>
-            </div>
-        </div>
 
         <fieldset>
             <legend>Consommation</legend>
