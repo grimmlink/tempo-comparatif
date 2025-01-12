@@ -2,13 +2,13 @@
 
 $tarifsTempo = [
     'abo' => [
-        6 => 12.96,
-        9 => 16.16,
-        12 => 19.44,
+        6  => 13.03,
+        9  => 16.25,
+        12 => 19.56,
         15 => 22.45,
-        18 => 25.44,
-        30 => 38.29,
-        36 => 44.42,
+        18 => 25.60,
+        30 => 38.53,
+        36 => 44.71,
     ],
     'TEMPO_BLEU' => [
         'hp' => 0.1609,
@@ -45,19 +45,40 @@ $tarifsZenFlex = [
     ],
 ];
 
+$tarifsZenFixe = [
+    'abo' => [
+        3  => 9.69,
+        6  => 12.67,
+        9  => 15.89,
+        12 => 19.16,
+        15 => 22.21,
+        18 => 25.24,
+        24 => 31.96,
+        30 => 37.68,
+        36 => 44.43,
+    ],
+    'hchp' => [
+        'hp' => 0.1876,
+        'hc' => 0.1456,
+    ],
+    'base' => 0.1753,
+];
+
 $tarifBase = $_POST['tarifBase'] ?? 0.2516;
-$aboBase = $_POST['aboBase'] ?? 12.60;
+$aboBase = $_POST['aboBase'] ?? 12.68;
 $tarifHP = $_POST['tarifHP'] ?? 0.2700;
 $tarifHC1 = $_POST['tarifHC1'] ?? '1400-1600-0.2068';
 $tarifHC2 = $_POST['tarifHC2'] ?? '0000-0600-0.2068';
-$aboHCHP = $_POST['aboHCHP'] ?? 13.01;
+$aboHCHP = $_POST['aboHCHP'] ?? 13.09;
 $aboTempo = $_POST['aboTempo'] ?? $tarifsTempo['abo'][6];
 $aboZenFlex = $_POST['aboZenFlex'] ?? $tarifsZenFlex['abo'][6];
+$aboZenFixe = $_POST['aboZenFixe'] ?? $tarifsZenFixe['abo'][6];
+$optionZenFixe = $_POST['optionZenFixe'] ?? 'hchp';
 
 if (isset($_FILES['conso_file']) && file_exists($_FILES['conso_file']['tmp_name'])) {
     $consos = [];
 
-    $sumBase = $sumTempo = $sumHCHP = $sumZenFlex = 0;
+    $sumBase = $sumTempo = $sumHCHP = $sumZenFlex = $sumZenFixe = 0;
     $nbMonths = 0;
     $prevMonth = null;
     $totalConso = 0;
@@ -171,7 +192,7 @@ if (isset($_FILES['conso_file']) && file_exists($_FILES['conso_file']['tmp_name'
 
 //        echo $currentDate->format('Y-n-j H:i') . ' / ' . $tempoPeriod . ' / ' . $couleurTempo . ' / ' . $tarifTempo . '<br />';
 
-        // HC/HP
+        // HC/HP / ZenFixe
         $isHC = false;
         $tarifHCHP = $tarifHP;
         foreach ($periodsHC as $periodHC) {
@@ -183,7 +204,17 @@ if (isset($_FILES['conso_file']) && file_exists($_FILES['conso_file']['tmp_name'
                 $tarifHCHP = $periodHC['tarif'];
             }
         }
-        $priceHCHP = $valueKWH * $tarifHCHP;
+        $priceHCHP = $isHC ? $valueKWH * $periodHC['tarif'] : $valueKWH * $tarifHP;
+
+
+        // ZenFixe
+        if ($optionZenFixe === 'base') {
+            $tarifZenFixe = $tarifsZenFixe['base'];
+            $priceZenFixe = $valueKWH * $tarifZenFixe;
+        } else {
+            $tarifZenFixe = $isHC ? $tarifsZenFixe['hchp']['hc'] : $tarifsZenFixe['hchp']['hp'];
+            $priceZenFixe = $valueKWH * $tarifZenFixe;
+        }
 
         $comparatif[] = [
             $currentDate->format(DATE_ATOM),
@@ -199,23 +230,28 @@ if (isset($_FILES['conso_file']) && file_exists($_FILES['conso_file']['tmp_name'
             $isHC ? 'oui' : 'non',
             $tarifHCHP,
             $priceHCHP,
+            $tarifZenFixe,
+            $priceZenFixe,
         ];
 
         $sumBase += $priceBase;
         $sumTempo += $priceTempo;
         $sumZenFlex += $priceZenFlex;
         $sumHCHP += $priceHCHP;
+        $sumZenFixe += $priceZenFixe;
 
         $totalConso += $valueKWH * 1000;
 
         $row++;
     }
+//    var_dump($comparatif);
 //    exit;
 
     $totalBase = $sumBase + $aboBase * $nbMonths;
     $totalTempo = $sumTempo + $aboTempo * $nbMonths;
     $totalZenFlex = $sumZenFlex + $aboZenFlex * $nbMonths;
     $totalHCHP = $sumHCHP + $aboHCHP * $nbMonths;
+    $totalZenFixe = $sumZenFixe + $aboZenFixe * $nbMonths;
 
     if (isset($_POST['export']) && $_POST['export'] === 'oui') {
         $fp = fopen('php://memory', 'w');
@@ -233,6 +269,8 @@ if (isset($_FILES['conso_file']) && file_exists($_FILES['conso_file']['tmp_name'
             'HC?',
             'Tarif kWh HC/HP',
             'Total HC/HP',
+            'Tarif kWh ZenFixe',
+            'Total ZenFixe',
         ], ';');
 
         foreach ($comparatif as $fields) {
@@ -286,6 +324,13 @@ if (isset($_FILES['conso_file']) && file_exists($_FILES['conso_file']['tmp_name'
                     <td>'.number_format($sumHCHP, 2).'€</td>
                     <td>'.number_format($totalHCHP, 2).'€</td>
                     <td>'.number_format(100 - (100 * $totalHCHP / $totalBase), 2).'%</td>
+                </tr>
+                <tr>
+                    <th>ZenFixe</th>
+                    <td>'.number_format($aboZenFixe * $nbMonths, 2).'€</td>
+                    <td>'.number_format($sumZenFixe, 2).'€</td>
+                    <td>'.number_format($totalZenFixe, 2).'€</td>
+                    <td>'.number_format(100 - (100 * $totalZenFixe / $totalBase), 2).'%</td>
                 </tr>
             </table>
             ';
@@ -377,6 +422,27 @@ if (isset($_FILES['conso_file']) && file_exists($_FILES['conso_file']['tmp_name'
                             <label for="aboZenFlex" class="form-label">Abonnement ZenFlex</label>
                             <input type="text" class="form-control" name="aboZenFlex" id="aboZenFlex" value="<?php
                             echo $aboZenFlex; ?>" placeholder="15">
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+            <div class="col">
+                <fieldset>
+                    <legend>ZenFixe</legend>
+                    <div class="row mb-3">
+                        <div class="col">
+                            <label for="aboZenFixe" class="form-label">Abonnement ZenFixe</label>
+                            <input type="text" class="form-control" name="aboZenFixe" id="aboZenFixe" value="<?php
+                            echo $aboZenFixe; ?>" placeholder="15">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <label for="aboZenFixe" class="form-label">Option ZenFixe</label>
+                            <select class="form-control" name="optionZenFixe" id="optionZenFixe">
+                                <option value="hchp" <?php echo $optionZenFixe === 'hchp' ? 'selected' : '' ?>>HC/HP</option>
+                                <option value="base" <?php echo $optionZenFixe === 'base' ? 'selected' : '' ?>>Base</option>
+                            </select>
                         </div>
                     </div>
                 </fieldset>
