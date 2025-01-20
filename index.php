@@ -393,6 +393,8 @@ if (isset($_FILES['conso_file']) && file_exists($_FILES['conso_file']['tmp_name'
         integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
         crossorigin="anonymous"></script>
 
+<div class="alert alert-info">Tarifs utilisés pour Base, HP/HC et Tempo au 1er février 2025</div>
+    
 <div class="container">
     <h1>Comparatif de facture Base / HC / Tempo / ZenFlex / ZenFixe</h1>
 
